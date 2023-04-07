@@ -1,0 +1,202 @@
+{% load static %}
+{% load compress %}
+{% load widget_tweaks %}
+
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://vjs.zencdn.net/7.18.1/video-js.css" rel="stylesheet" />
+    <script src="https://vjs.zencdn.net/7.18.1/video.min.js"></script>
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tw-elements/dist/css/index.min.css" />
+    <title>ダンステスト</title>
+    {% compress css %}
+    <link rel="stylesheet" href="{% static 'src/output.css' %}">
+    {% endcompress %}
+</head>
+<body class="bg-black font-mono min-h-screen">
+    <header>
+
+        <nav class="p-3 bg-gray-900 rounded border-gray-200">
+            <div class="flex flex-wrap justify-between items-center mx-auto container">
+              <a href="{% url 'home_app:toppage' %}" class="flex items-center">
+                  <img src="{% static 'img\dancelive_icon.png' %}" class="mr-3 h-6 sm:h-10" alt="Flowbite Logo">
+                  <span class="self-center text-xl font-semibold whitespace-nowrap text-white sha">Dance Live</span>
+              </a>
+              <button data-collapse-toggle="navbar-solid-bg" type="button" class="inline-flex justify-center items-center ml-3 text-gray-400 rounded-lg md:hidden hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:text-gray-400 dark:hover:text-white dark:focus:ring-gray-500" aria-controls="navbar-solid-bg" aria-expanded="false">
+                <span class="sr-only">Open main menu</span>
+                <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
+              </button>
+
+              <div class="hidden w-full md:block md:w-auto" id="navbar-solid-bg">
+                <ul class="flex flex-col mt-4 bg-gray-50 rounded-lg md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-transparent dark:bg-gray-800 md:dark:bg-transparent dark:border-gray-700 font-mono font-bold">
+                  <li class="font-mono font-bold text-xl border-b-2 border-black sm:border-gray-300">
+                    <a href="{% url 'home_app:toppage' %}" class="block py-2 pr-4 pl-3 text-pink-600 rounded md:hover:text-gray-50" aria-current="page">トップ</a>
+                  </li>
+                  <li class="font-mono font-bold text-xl border-b-2 border-black sm:border-gray-300">
+                    <a href="{% url 'home_app:lesson_schedule_page' %}" class="block py-2 pr-4 pl-3  text-pink-600 rounded md:hover:text-gray-50">レッスンスケジュール</a>
+                  </li>
+                  <li class="font-mono font-bold text-xl border-b-2 border-black sm:border-gray-300">
+                    <a href="{% url 'home_app:price_page' %}" class="block py-2 pr-4 pl-3 text-pink-600 rounded md:hover:text-gray-50">料金について</a>
+                  </li>
+                  <li class="font-mono font-bold text-xl sm:border-b-2 sm:border-gray-300">
+                    <a href="{% url 'form_app:contact_form' %}" class="block py-2 pr-4 pl-3 text-pink-600 rounded md:hover:text-gray-50">お問い合わせ</a>
+                  </li>
+                  <li class="font-mono font-bold text-xl sm:border-b-2 sm:border-gray-300">
+                    <a href="{% url 'form_app:lesson_contact_form' %}" class="block py-2 pr-4 pl-3 text-pink-600 rounded md:hover:text-gray-50">お問い合わせ</a>
+                  </li>
+                  {% if request.user.is_authenticated %}
+                  
+                  <li>
+                    <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar" class="flex justify-between items-center py-2 pr-4 pl-3 w-full font-medium text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-gray-400 dark:hover:text-white dark:focus:text-white dark:border-gray-700 dark:hover:bg-gray-700 md:dark:hover:bg-transparent">{{ user.first_name }}さん <svg class="ml-1 w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></button>
+                    <!-- Dropdown menu -->
+                    <div id="dropdownNavbar" class="hidden z-10 w-44 font-normal bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
+                        <ul class="py-1 text-sm text-gray-700 dark:text-gray-400" aria-labelledby="dropdownLargeButton">
+                          <li>
+                            <a href="{% url 'login_app:user_detail' %}" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">アカウント情報</a>
+                          </li>
+                          <li>
+                            <a href="#" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">aaaa</a>
+                          </li>
+                        </ul>
+                        <div class="py-1">
+                          <a href="{% url 'login_app:user_logout' %}" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">ログアウト</a>
+                        </div>
+                    </div>
+                    </li>
+                  {% else %}
+                  <li class="font-mono font-bold text-xl sm:border-b-2 sm:border-gray-300">
+                    <a href="{% url 'login_app:login' %}" class="block py-2 pr-4 pl-3 text-pink-600 rounded md:hover:text-gray-50">ログイン</a>
+                  {% endif %}
+
+
+                </ul>
+              </div>
+            </div>
+        </nav>
+          
+    </header>
+
+            
+    <div id="default-carousel" class="relative" data-carousel="static">
+        <!-- Carousel wrapper -->
+        <div class="relative h-56 overflow-hidden rounded-lg md:h-96 " style="z-index:1;">
+            <!-- Item 1 -->
+            <div class="duration-700 ease-in-out absolute inset-0 transition-all transform translate-x-0 z-20" data-carousel-item="">
+                <span class="absolute text-2xl font-semibold text-white -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 sm:text-3xl dark:text-gray-800">First Slide</span>
+                <img src="{% static 'img\dancelive_header.png' %}" class="absolute block w-auto -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+            </div>
+            <!-- Item 2 -->
+            <div class="duration-700 ease-in-out absolute inset-0 transition-all transform translate-x-full z-10" data-carousel-item="">
+                <img src="{% static 'img\スクリーンショット (95).png' %}" class="absolute block w-auto -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+            </div>
+            <!-- Item 3 -->
+            <div class="duration-700 ease-in-out absolute inset-0 transition-all transform -translate-x-full z-10" data-carousel-item="">
+                <img src="/docs/images/carousel/carousel-3.svg" class="absolute block w-auto -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+            </div>
+        </div>
+        <!-- Slider indicators -->
+        <div class="absolute z-30 flex space-x-3 -translate-x-1/2 bottom-5 left-1/2">
+            <button type="button" class="w-3 h-3 rounded-full bg-white dark:bg-gray-800" aria-current="true" aria-label="Slide 1" data-carousel-slide-to="0"></button>
+            <button type="button" class="w-3 h-3 rounded-full bg-white/50 dark:bg-gray-800/50 hover:bg-white dark:hover:bg-gray-800" aria-current="false" aria-label="Slide 2" data-carousel-slide-to="1"></button>
+            <button type="button" class="w-3 h-3 rounded-full bg-white/50 dark:bg-gray-800/50 hover:bg-white dark:hover:bg-gray-800" aria-current="false" aria-label="Slide 3" data-carousel-slide-to="2"></button>
+        </div>
+        <!-- Slider controls -->
+        <button type="button" class="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-prev="">
+            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                <svg aria-hidden="true" class="w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                <span class="sr-only">Previous</span>
+            </span>
+        </button>
+        <button type="button" class="absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-next="">
+            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                <svg aria-hidden="true" class="w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                <span class="sr-only">Next</span>
+            </span>
+        </button>
+    </div>
+              
+        <main class="container mx-auto p-2">
+            <div class="pb-2">
+                <ul class="grid grid-cols-2 text-gray-200 gap-2 text-center">
+                    <li class="border-4 border-pink-700 hover:bg-gray-900">
+                        <a href="{% url 'home_app:what_dancelive_page' %}">
+                            <button type="button" class="w-full p-2">ダンスライブとは？</button>
+                        </a>
+                    </li>
+                    <li class="border-4 border-pink-700 hover:bg-gray-900">
+                        <a href="{% url 'home_app:genrepage' %}">
+                            <button type="button" class="w-full p-2">ジャンル紹介</button>
+                        </a>
+                    </li>
+                    <li class="border-4 border-pink-700 hover:bg-gray-900">
+                        <a href="{% url 'home_app:price_page' %}">
+                            <button type="button" class="w-full p-2">料金について</button>
+                        </a>
+                    </li>
+                    <li class="border-4 border-pink-700 hover:bg-gray-900">
+                        <a href="{% url 'home_app:instructor_page' %}">
+                            <button type="button" class="w-full p-2">インストラクター</button>
+                        </a>
+                    </li>
+                    <li class="border-4 border-pink-700 hover:bg-gray-900">
+                        <button type="button" class="w-full p-2">イベント情報</button>
+                    </li>
+                    <li class="border-4 border-pink-700 hover:bg-gray-900">
+                        <a href="{% url 'movie_app:movie_top_page' %}">
+                            <button type="button" class="w-full p-2">会員限定</button>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+                    {% block login %}{% endblock %}
+
+                    {% block user_detail %}{% endblock %}
+
+                    {% block user_edit_detail %}{% endblock %}
+
+                    
+                    {% block forms %}{% endblock %}
+                    
+                    {% block top %}{% endblock %}
+
+                    {% block genre %}{% endblock %}
+
+                    {% block lesson_schedule %}{% endblock %}
+
+                    {% block instructor %}{% endblock %}
+
+                    {% block price %}{% endblock %}
+
+                    {% block what_dancelive %}{% endblock %}
+
+                    {% block movie_top_page %}{% endblock %}
+
+                    {% block movie_unregister %}{% endblock %}
+
+                    {% block lesson_contact_form %}{% endblock %}
+
+                    {% block event_apply_form %}{% endblock %}
+
+                    {% block event_apply_detail_edit %}{% endblock %}
+
+
+                    
+        </main>
+        
+
+
+        <script src="https://unpkg.com/flowbite@1.5.3/dist/flowbite.js"></script>
+<footer class="bg-gray-50">
+<div class="block p-2">a</div>
+</footer>
+</body>
+
+</html>
